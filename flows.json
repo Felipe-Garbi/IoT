@@ -1,0 +1,186 @@
+[
+    {
+        "id": "8e25b3e9e157d730",
+        "type": "debug",
+        "z": "3b8e256e8c5f4ab9",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "7491d21655479edc",
+        "type": "influxdb out",
+        "z": "3b8e256e8c5f4ab9",
+        "influxdb": "1b028931f5966dd4",
+        "name": "Objetos Inteligentes",
+        "measurement": "sunset_status",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "IoT",
+        "bucket": "Panel",
+        "x": 1070,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "44fed75e4d6d0a64",
+        "type": "json",
+        "z": "3b8e256e8c5f4ab9",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 690,
+        "y": 280,
+        "wires": [
+            [
+                "af084cb7926a3cc7"
+            ]
+        ]
+    },
+    {
+        "id": "575f6e5c727e554b",
+        "type": "mqtt out",
+        "z": "3b8e256e8c5f4ab9",
+        "name": "",
+        "topic": "esp32/sunset",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "ebe5339e.74f6a",
+        "x": 1060,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "600ff953ea362be6",
+        "type": "http request",
+        "z": "3b8e256e8c5f4ab9",
+        "name": "Get Weather Data",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://api.openweathermap.org/data/2.5/weather?q=São%20Paulo,BR&APPID=c8cb6b05f51dd63e37d0d17f0ab6768a",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 490,
+        "y": 280,
+        "wires": [
+            [
+                "44fed75e4d6d0a64"
+            ]
+        ]
+    },
+    {
+        "id": "31570c675e9f9e84",
+        "type": "inject",
+        "z": "3b8e256e8c5f4ab9",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "10",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 280,
+        "wires": [
+            [
+                "600ff953ea362be6"
+            ]
+        ]
+    },
+    {
+        "id": "af084cb7926a3cc7",
+        "type": "function",
+        "z": "3b8e256e8c5f4ab9",
+        "name": "Check Sunset",
+        "func": "let sunsetTime = msg.payload.sys.sunset;\nlet currentTime = Math.floor(Date.now() / 1000); // Current time in seconds\n\nif (currentTime > sunsetTime) {\n    msg.payload = { sunset_status: \"clean\" };\n} else {\n    msg.payload = { sunset_status: \"no_clean\" };\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 280,
+        "wires": [
+            [
+                "8e25b3e9e157d730",
+                "7491d21655479edc",
+                "575f6e5c727e554b"
+            ]
+        ]
+    },
+    {
+        "id": "1b028931f5966dd4",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "Objetos Inteligentes",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "https://us-east-1-1.aws.cloud2.influxdata.com",
+        "timeout": "10",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "ebe5339e.74f6a",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "compatmode": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]
