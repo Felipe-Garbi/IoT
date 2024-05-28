@@ -10,3 +10,12 @@
 - **Broker MQTT**: HiveMQ broker.hivemq.com para comunicação MQTT.
 - **API OpenWeatherMap**: Para obter dados meteorológicos.
 - **Node-RED**: Para processar e armazenar dados.
+
+
+## Grupo
+
+- Gabriel Rezende Rangel Santana - 10331989
+- Rafael Pakalnis Paez - 10401462
+- João Victor Silva - 10401977
+- Felipe da Silva Morishita Garbi - 10401362
+
